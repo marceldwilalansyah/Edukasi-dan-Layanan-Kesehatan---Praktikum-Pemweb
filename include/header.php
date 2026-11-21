@@ -28,14 +28,16 @@ function navActive($needle, $currentPath) {
             <?php if ($role === 'pengguna'): ?>
                 <a class="nav-link<?= navActive('/pengguna/dashboard.php', $currentPath) ?>" href="<?= $baseUrl ?>/pengguna/dashboard.php">Beranda</a>
                 <a class="nav-link<?= navActive('/pengguna/artikel/', $currentPath) ?>" href="<?= $baseUrl ?>/pengguna/artikel/index.php">Artikel</a>
-                <a class="nav-link" href="<?= $baseUrl ?>/pengguna/dashboard.php#kuis">Kuis</a>
-                <a class="nav-link" href="<?= $baseUrl ?>/pengguna/dashboard.php#tracker">Tracker</a>
+                <a class="nav-link<?= navActive('/pengguna/kalkulator/', $currentPath) ?>" href="<?= $baseUrl ?>/pengguna/kalkulator/index.php">Kalkulator</a>
+                <a class="nav-link<?= navActive('/pengguna/kuis/', $currentPath) ?>" href="<?= $baseUrl ?>/pengguna/kuis/index.php">Kuis</a>
+                <a class="nav-link<?= navActive('/pengguna/catatan/', $currentPath) ?>" href="<?= $baseUrl ?>/pengguna/catatan/index.php">Tracker</a>
                 <a class="nav-link" href="<?= $baseUrl ?>/pengguna/dashboard.php#konsultasi">Konsultasi</a>
             <?php elseif ($role === 'admin'): ?>
                 <a class="nav-link<?= navActive('/admin/dashboard.php', $currentPath) ?>" href="<?= $baseUrl ?>/admin/dashboard.php">Dashboard</a>
                 <a class="nav-link<?= navActive('/admin/user/', $currentPath) ?>" href="<?= $baseUrl ?>/admin/user/index.php">Pengguna</a>
                 <a class="nav-link<?= navActive('/admin/artikel/', $currentPath) ?>" href="<?= $baseUrl ?>/admin/artikel/index.php">Artikel</a>
                 <a class="nav-link<?= navActive('/kategori/', $currentPath) ?>" href="<?= $baseUrl ?>/kategori/index.php">Kategori</a>
+                <a class="nav-link<?= navActive('/admin/kuis/', $currentPath) ?>" href="<?= $baseUrl ?>/admin/kuis/index.php">Kuis</a>
             <?php elseif ($role === 'nakes'): ?>
                 <a class="nav-link<?= navActive('/nakes/dashboard.php', $currentPath) ?>" href="<?= $baseUrl ?>/nakes/dashboard.php">Dashboard</a>
                 <a class="nav-link<?= navActive('/nakes/profile.php', $currentPath) ?>" href="<?= $baseUrl ?>/nakes/profile.php">Profil</a>
