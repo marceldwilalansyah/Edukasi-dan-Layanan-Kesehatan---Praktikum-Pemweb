@@ -1,6 +1,7 @@
 <?php
 require_once "../../include/auth_check.php";
 require_once "../../koneksi.php";
+require_once "../../include/fungsi.php";
 
 cekRole("pengguna");
 
@@ -47,14 +48,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $skor = (int) round(($jumlah_benar / $total_soal) * 100);
 
-    // Tentukan Badge berdasarkan skor
-    if ($skor >= 80) {
-        $badge = "🏆 Duta Sehat (Luar Biasa!)";
-    } elseif ($skor >= 60) {
-        $badge = "🥈 Pejuang Sehat (Bagus!)";
-    } else {
-        $badge = "🌱 Pemula Sehat (Terus Belajar!)";
-    }
+    
+    $tingkat = tingkatBadge($skor);
+    $badge   = labelBadge($tingkat);
+
+   
+    [$skor_min, $skor_maks] = rentangBadge($tingkat);
+    $stmt_cek = mysqli_prepare(
+        $koneksi,
+        "SELECT COUNT(*) AS total FROM riwayat_kuis WHERE user_id = ? AND skor BETWEEN ? AND ?"
+    );
+    mysqli_stmt_bind_param($stmt_cek, "iii", $user_id, $skor_min, $skor_maks);
+    mysqli_stmt_execute($stmt_cek);
+    $badge_baru = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_cek))["total"] === 0;
 
     $stmt_simpan = mysqli_prepare(
         $koneksi,
@@ -62,6 +68,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     );
     mysqli_stmt_bind_param($stmt_simpan, "iiiii", $user_id, $kuis_id, $skor, $jumlah_benar, $total_soal);
     mysqli_stmt_execute($stmt_simpan);
+
+   
+    if ($badge_baru) {
+        buatNotifikasi(
+            $koneksi,
+            $user_id,
+            "badge",
+            "Badge baru!",
+            "Kamu mendapat badge " . namaBadge($tingkat) . " dari kuis \"" . $kuis["judul"] . "\" dengan skor " . $skor . ".",
+            "pengguna/kuis/index.php"
+        );
+    }
 
     $hasil = [
         "skor"         => $skor,

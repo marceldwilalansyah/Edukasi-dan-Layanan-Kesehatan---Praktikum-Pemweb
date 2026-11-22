@@ -8,7 +8,7 @@ $user_id    = $_SESSION["user_id"];
 $catatan_id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
 $error      = "";
 
-// Ambil data catatan milik pengguna
+
 $query = "SELECT * FROM catatan_kesehatan WHERE catatan_id = ? AND user_id = ?";
 $stmt  = mysqli_prepare($koneksi, $query);
 mysqli_stmt_bind_param($stmt, "ii", $catatan_id, $user_id);
@@ -19,7 +19,7 @@ if (!$catatan) {
     die("Catatan kesehatan tidak ditemukan.");
 }
 
-// Proses update saat form disubmit
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $tanggal_catatan = trim($_POST["tanggal_catatan"] ?? "");
     $durasi_tidur    = isset($_POST["durasi_tidur"]) ? (float) $_POST["durasi_tidur"] : 0;

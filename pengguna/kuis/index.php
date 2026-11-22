@@ -6,7 +6,7 @@ cekRole("pengguna");
 
 $user_id = $_SESSION["user_id"];
 
-// Ambil daftar kuis beserta jumlah soalnya
+
 $query_kuis = "
     SELECT k.*, COUNT(p.pertanyaan_id) AS total_soal
     FROM kuis k
@@ -16,7 +16,7 @@ $query_kuis = "
 ";
 $daftar_kuis = mysqli_query($koneksi, $query_kuis);
 
-// Ambil riwayat pengerjaan kuis milik pengguna
+
 $query_riwayat = "
     SELECT r.*, k.judul
     FROM riwayat_kuis r

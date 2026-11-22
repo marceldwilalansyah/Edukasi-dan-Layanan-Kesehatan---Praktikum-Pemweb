@@ -14,3 +14,12 @@ function cekRole($role)
         exit;
     }
 }
+
+
+function cekRoleSalahSatu($daftarRole)
+{
+    if (!isset($_SESSION['role_name']) || !in_array($_SESSION['role_name'], $daftarRole, true)) {
+        header("Location: /sehatku/index.php");
+        exit;
+    }
+}

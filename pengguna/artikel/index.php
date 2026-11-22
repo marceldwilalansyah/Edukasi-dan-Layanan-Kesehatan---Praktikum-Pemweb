@@ -11,13 +11,13 @@ if ($halaman < 1) {
     $halaman = 1;
 }
 
-$batas = 5; // Jumlah artikel per halaman
+$batas = 5;
 $mulai = ($halaman - 1) * $batas;
 
-// Ambil daftar kategori untuk dropdown filter
+
 $daftar_kategori = mysqli_query($koneksi, "SELECT * FROM categories ORDER BY category_name");
 
-// Siapkan kondisi WHERE untuk pencarian & filter
+
 $kondisi = "WHERE a.status = 'terbit'";
 $params  = [];
 $types   = "";
@@ -36,7 +36,7 @@ if ($kategori_id > 0) {
     $types .= "i";
 }
 
-// 1. Hitung total data untuk pagination
+
 $query_total = "SELECT COUNT(*) AS total FROM articles a $kondisi";
 $stmt_total = mysqli_prepare($koneksi, $query_total);
 
@@ -49,7 +49,6 @@ $hasil_total   = mysqli_stmt_get_result($stmt_total);
 $total_data    = mysqli_fetch_assoc($hasil_total)["total"];
 $total_halaman = ceil($total_data / $batas);
 
-// 2. Ambil data artikel sesuai halaman
 $query = "
     SELECT
         a.article_id,

@@ -32,7 +32,7 @@ if (!$artikel) {
     die("Artikel tidak ditemukan.");
 }
 
-// Cek apakah artikel ini sudah di-bookmark oleh pengguna
+a
 $cek_query = "SELECT bookmark_id FROM bookmark_artikel WHERE user_id = ? AND article_id = ?";
 $cek_stmt  = mysqli_prepare($koneksi, $cek_query);
 mysqli_stmt_bind_param($cek_stmt, "ii", $user_id, $id);

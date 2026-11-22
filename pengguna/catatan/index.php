@@ -8,7 +8,7 @@ $user_id       = $_SESSION["user_id"];
 $tanggal_mulai = isset($_GET["tanggal_mulai"]) ? trim($_GET["tanggal_mulai"]) : "";
 $tanggal_akhir = isset($_GET["tanggal_akhir"]) ? trim($_GET["tanggal_akhir"]) : "";
 
-// Siapkan query dasar
+
 $query  = "SELECT * FROM catatan_kesehatan WHERE user_id = ?";
 $params = [$user_id];
 $types  = "i";

@@ -31,6 +31,11 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     email VARCHAR(150) DEFAULT NULL,
     no_hp VARCHAR(20) DEFAULT NULL,
     alamat TEXT DEFAULT NULL,
+    tinggi DECIMAL(5,2) DEFAULT NULL,
+    berat DECIMAL(5,2) DEFAULT NULL,
+    tanggal_lahir DATE DEFAULT NULL,
+    spesialisasi VARCHAR(150) DEFAULT NULL,
+    bio TEXT DEFAULT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_profile_user
@@ -180,3 +185,101 @@ INSERT IGNORE INTO pertanyaan_kuis (pertanyaan_id, kuis_id, pertanyaan, opsi_a, 
 (1, 1, 'Berapa jam durasi tidur ideal bagi orang dewasa per malam?', '3 - 4 jam', '5 - 6 jam', '7 - 9 jam', '11 - 12 jam', 'C', 'Orang dewasa membutuhkan 7–9 jam tidur berkualitas setiap malam untuk pemulihan fisik dan fungsi otak.'),
 (2, 1, 'Berapa rata-rata anjuran konsumsi air putih harian untuk orang dewasa?', 'Sekitar 2 liter (8 gelas)', '0.5 liter', '5 liter', 'Tidak perlu jika sudah minum kopi', 'A', 'Kebutuhan cairan rata-rata orang dewasa adalah sekitar 2 liter atau 8 gelas air putih per hari.'),
 (3, 1, 'Aktivitas fisik ringan seperti jalan cepat sebaiknya dilakukan minimal berapa menit per minggu?', '10 menit', '30 menit', '150 menit', '500 menit', 'C', 'WHO menganjurkan aktivitas fisik intensitas sedang minimal 150 menit per minggu untuk menjaga kesehatan jantung.');
+
+-- ==========================================
+-- TABEL MODUL 7: KONSULTASI
+-- ==========================================
+
+-- Jadwal praktik yang dibuat tenaga kesehatan (nakes)
+CREATE TABLE IF NOT EXISTS jadwal_praktik (
+    jadwal_id INT AUTO_INCREMENT PRIMARY KEY,
+    nakes_id INT NOT NULL,
+    tanggal DATE NOT NULL,
+    jam_mulai TIME NOT NULL,
+    jam_selesai TIME NOT NULL,
+    status ENUM('tersedia', 'dibooking') NOT NULL DEFAULT 'tersedia',
+    dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_jadwal_nakes_tanggal (nakes_id, tanggal),
+
+    CONSTRAINT fk_jadwal_nakes
+        FOREIGN KEY (nakes_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Permintaan konsultasi (booking) dari pengguna ke nakes.
+-- tanggal & jam disalin dari jadwal supaya riwayat tetap utuh
+-- walaupun nakes menghapus jadwalnya.
+CREATE TABLE IF NOT EXISTS konsultasi (
+    konsultasi_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    nakes_id INT NOT NULL,
+    jadwal_id INT DEFAULT NULL,
+    tanggal_konsultasi DATE NOT NULL,
+    jam_mulai TIME NOT NULL,
+    jam_selesai TIME NOT NULL,
+    keluhan TEXT NOT NULL,
+    status ENUM('menunggu', 'dikonfirmasi', 'selesai', 'dibatalkan') NOT NULL DEFAULT 'menunggu',
+    catatan_nakes TEXT DEFAULT NULL,
+    dibatalkan_oleh ENUM('pengguna', 'nakes') DEFAULT NULL,
+    dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    diperbarui_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    INDEX idx_konsultasi_nakes_status (nakes_id, status),
+    INDEX idx_konsultasi_user (user_id, status),
+
+    CONSTRAINT fk_konsultasi_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_konsultasi_nakes
+        FOREIGN KEY (nakes_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_konsultasi_jadwal
+        FOREIGN KEY (jadwal_id)
+        REFERENCES jadwal_praktik(jadwal_id)
+        ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- ==========================================
+-- TABEL MODUL 8: NOTIFIKASI & PENGINGAT
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS notifikasi (
+    notifikasi_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    jenis ENUM('booking', 'konsultasi', 'badge', 'sistem') NOT NULL DEFAULT 'sistem',
+    judul VARCHAR(150) NOT NULL,
+    pesan TEXT NOT NULL,
+    tautan VARCHAR(255) DEFAULT NULL,
+    sudah_dibaca TINYINT(1) NOT NULL DEFAULT 0,
+    dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_notifikasi_user (user_id, sudah_dibaca, dibuat_pada),
+
+    CONSTRAINT fk_notifikasi_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Satu pengingat per jenis untuk tiap pengguna
+CREATE TABLE IF NOT EXISTS pengingat (
+    pengingat_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    jenis ENUM('air', 'tidur', 'olahraga') NOT NULL,
+    jam TIME NOT NULL,
+    aktif TINYINT(1) NOT NULL DEFAULT 1,
+    terakhir_ditutup DATE DEFAULT NULL,
+
+    UNIQUE KEY unik_user_jenis (user_id, jenis),
+
+    CONSTRAINT fk_pengingat_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;

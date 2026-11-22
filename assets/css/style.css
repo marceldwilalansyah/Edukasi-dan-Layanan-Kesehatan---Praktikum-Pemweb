@@ -192,3 +192,165 @@ td a:not(.button) { font-weight:700; text-decoration:none; }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; }
 }
+
+
+/* ==========================================
+   MODUL 7 - 9: KONSULTASI, NOTIFIKASI, DASHBOARD
+   ========================================== */
+
+:root {
+    --amber: #b7791f;
+    --amber-bg: #fff4dc;
+    --sky: #1d6fa5;
+    --sky-bg: #dcefff;
+}
+
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.mt-0 { margin-top: 0; }
+
+.grid-2, .grid-3, .stat-grid { display: grid; gap: 18px; margin: 18px 0; }
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.stat-grid { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.grid-2 > .card, .grid-3 > .card { margin: 0; }
+.card h2 { font-size: 19px; color: var(--navy); letter-spacing: -.02em; margin: 0 0 14px; }
+.card + .card { margin-top: 18px; }
+.grid-2 > .card + .card, .grid-3 > .card + .card { margin-top: 0; }
+
+/* Form baris & kecil di dalam tabel / kartu */
+.inline-form { display: inline-flex; flex-direction: row; align-items: center; gap: 8px; margin: 0; }
+.inline-form button, .inline-form .button { margin-top: 0; }
+.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; align-items: end; }
+.form-row label { margin-top: 0; }
+.button.small-button { padding: 8px 13px; font-size: 13px; border-radius: 11px; }
+button.secondary-ghost { background: transparent; color: var(--muted); box-shadow: none; padding: 6px 10px; border-radius: 10px; }
+button.secondary-ghost:hover { background: rgba(0,0,0,.05); color: var(--navy); box-shadow: none; transform: none; }
+
+/* Kartu statistik */
+.stat-card { background: rgba(255,255,255,.94); border: 1px solid var(--line); border-radius: 20px; padding: 18px 20px; box-shadow: var(--shadow-soft); }
+.stat-card .stat-label { display: block; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.stat-card .stat-value { display: block; margin-top: 8px; font-size: 34px; font-weight: 800; letter-spacing: -.04em; color: var(--navy); line-height: 1; }
+.stat-card .stat-note { display: block; margin-top: 8px; font-size: 13px; color: var(--muted); }
+.stat-card.accent { background: linear-gradient(135deg, var(--forest), var(--green)); border-color: transparent; }
+.stat-card.accent .stat-label, .stat-card.accent .stat-note { color: rgba(255,255,255,.82); }
+.stat-card.accent .stat-value { color: white; }
+
+/* Label status */
+.pill { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 12px; font-weight: 750; white-space: nowrap; background: #eef0ee; color: #4b5563; }
+.pill-menunggu { background: var(--amber-bg); color: var(--amber); }
+.pill-dikonfirmasi { background: var(--sky-bg); color: var(--sky); }
+.pill-selesai, .pill-tersedia { background: var(--mint); color: var(--forest); }
+.pill-dibatalkan { background: #fdeceb; color: #a73d3d; }
+.pill-dibooking { background: var(--sky-bg); color: var(--sky); }
+
+/* Tab filter */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+.tab { padding: 8px 15px; border-radius: 999px; border: 1px solid var(--line); background: white; color: #61706c; text-decoration: none; font-size: 13px; font-weight: 700; }
+.tab:hover { background: var(--sage); color: var(--forest); }
+.tab.is-active { background: var(--forest); color: white; border-color: var(--forest); }
+
+/* Daftar kartu (konsultasi, nakes) */
+.item-list { display: flex; flex-direction: column; gap: 14px; }
+.item-card { background: rgba(255,255,255,.94); border: 1px solid var(--line); border-radius: 20px; padding: 18px 20px; box-shadow: var(--shadow-soft); scroll-margin-top: 110px; }
+.item-card:target { border-color: var(--green); box-shadow: 0 0 0 4px rgba(21,154,120,.12); }
+.item-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.item-head h3 { margin: 0; font-size: 17px; color: var(--navy); }
+.item-head .meta { color: var(--muted); font-size: 13px; margin-top: 3px; }
+.item-body { margin-top: 12px; }
+.item-body p { margin: 6px 0; }
+.note-box { margin-top: 10px; padding: 11px 14px; border-radius: 12px; background: var(--sage); border: 1px solid #d8eadf; font-size: 14px; }
+.note-box strong { color: var(--forest); }
+.empty-state { text-align: center; padding: 28px 10px; color: var(--muted); }
+
+/* Pilihan slot jadwal */
+.slot-day { margin: 16px 0 8px; font-weight: 800; color: var(--navy); }
+.slot-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.slot { position: relative; margin: 0; cursor: pointer; }
+.slot input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; padding: 0; }
+.slot span { display: block; padding: 10px 16px; border: 1.5px solid var(--line); border-radius: 13px; background: white; font-weight: 700; color: var(--navy); transition: .18s ease; }
+.slot:hover span { border-color: var(--green); }
+.slot input:checked + span { background: var(--forest); border-color: var(--forest); color: white; box-shadow: 0 8px 18px rgba(11,93,75,.18); }
+.slot input:focus-visible + span { outline: 3px solid rgba(21,154,120,.35); outline-offset: 2px; }
+
+/* Notifikasi */
+.icon-button.bell { position: relative; text-decoration: none; font-size: 16px; }
+.icon-button.bell.is-active { background: var(--mint); border-color: #c7eadb; }
+.bell-count { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--coral); color: white; font-size: 10px; font-weight: 800; display: grid; place-items: center; line-height: 1; }
+.notif-list { display: flex; flex-direction: column; gap: 10px; }
+.notif-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border-radius: 16px; background: white; border: 1px solid var(--line); text-decoration: none; color: var(--text); transition: .2s ease; }
+.notif-item:hover { color: var(--text); transform: translateY(-2px); box-shadow: var(--shadow-soft); }
+.notif-item.unread { background: #f1fbf6; border-color: #bfe6d3; }
+.notif-icon { flex: none; width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; background: var(--sage); font-size: 18px; }
+.notif-item.unread .notif-icon { background: var(--mint); }
+.notif-body { flex: 1; min-width: 0; }
+.notif-body strong { display: block; color: var(--navy); }
+.notif-body p { margin: 3px 0 0; font-size: 14px; color: #4b5563; }
+.notif-time { display: block; margin-top: 5px; font-size: 12px; color: var(--muted); }
+.notif-dot { flex: none; width: 10px; height: 10px; margin-top: 6px; border-radius: 50%; background: var(--coral); }
+
+/* Banner pengingat */
+.reminder-banner { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; padding: 12px 14px 12px 18px; background: var(--cream); border: 1px solid #f3dfc8; border-radius: 18px; box-shadow: var(--shadow-soft); }
+.reminder-icon { font-size: 24px; }
+.reminder-text { flex: 1; display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+.reminder-text strong { color: var(--navy); }
+.reminder-banner .button { margin: 0; }
+
+/* Pengaturan pengingat */
+.reminder-row { display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid #edf1ee; }
+.reminder-row:last-of-type { border-bottom: 0; }
+.reminder-row .reminder-name { display: flex; align-items: center; gap: 12px; font-weight: 750; color: var(--navy); }
+.reminder-row .reminder-name span:first-child { font-size: 24px; }
+.reminder-row input[type="time"] { width: 140px; }
+.switch { display: inline-flex; flex-direction: row; align-items: center; gap: 8px; margin: 0; font-weight: 700; cursor: pointer; }
+.switch input { width: 20px; height: 20px; padding: 0; accent-color: var(--green); }
+
+/* Dashboard: bar horizontal */
+.bar-list { display: flex; flex-direction: column; gap: 14px; }
+.bar-row .bar-label { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 6px; font-size: 14px; }
+.bar-row .bar-label strong { color: var(--navy); }
+.bar-track { height: 11px; border-radius: 999px; background: #edf3ef; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--green), var(--forest)); min-width: 4px; }
+.bar-fill.menunggu { background: #e0a43a; }
+.bar-fill.dikonfirmasi { background: #4b9bd1; }
+.bar-fill.selesai { background: var(--green); }
+.bar-fill.dibatalkan { background: #d98080; }
+.bar-fill.coral { background: linear-gradient(90deg, #f6a58f, var(--coral)); }
+.rank-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.rank-list li { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: center; }
+.rank-no { width: 30px; height: 30px; border-radius: 50%; background: var(--mint); color: var(--forest); display: grid; place-items: center; font-weight: 800; font-size: 13px; }
+.rank-title { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; margin-bottom: 6px; }
+.rank-title a { font-weight: 700; text-decoration: none; }
+
+/* Dashboard pengguna: lingkaran progres & grafik */
+.progress-wrap { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.ring { width: 150px; height: 150px; flex: none; }
+.ring-bg { fill: none; stroke: #e6efe9; stroke-width: 11; }
+.ring-fg { fill: none; stroke: var(--green); stroke-width: 11; stroke-linecap: round; transition: stroke-dashoffset .8s ease; }
+.ring-text { font-size: 26px; font-weight: 800; fill: var(--navy); letter-spacing: -.04em; }
+.goal-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; font-size: 14px; flex: 1; min-width: 180px; }
+.goal-list li { display: flex; align-items: center; gap: 10px; }
+.goal-check { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #cfdcd5; display: grid; place-items: center; font-size: 12px; color: white; font-weight: 800; }
+.goal-list li.done .goal-check { background: var(--green); border-color: var(--green); }
+.goal-list .goal-detail { margin-left: auto; color: var(--muted); font-size: 12px; }
+.chart-svg { width: 100%; height: auto; display: block; }
+.chart-svg .chart-grid { stroke: #e6efe9; stroke-width: 1; }
+.chart-svg .chart-bar { fill: #a9dcc8; }
+.chart-svg .chart-bar.today { fill: var(--green); }
+.chart-svg text { font-family: inherit; fill: var(--muted); font-size: 11px; }
+.chart-svg text.chart-value { fill: var(--navy); font-weight: 700; }
+.badge-showcase { display: flex; align-items: center; gap: 14px; }
+.badge-icon { flex: none; width: 58px; height: 58px; border-radius: 18px; display: grid; place-items: center; background: var(--cream); border: 1px solid #f3dfc8; font-size: 30px; }
+.streak-number { font-size: 40px; font-weight: 800; letter-spacing: -.04em; color: var(--navy); line-height: 1; }
+
+@media (max-width: 860px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+    .reminder-banner { flex-wrap: wrap; }
+    .reminder-row { grid-template-columns: 1fr auto; }
+    .reminder-row input[type="time"] { grid-column: 1 / -1; width: 100%; }
+    .inline-form .button, .inline-form button { width: auto; }
+    .progress-wrap { justify-content: center; }
+}

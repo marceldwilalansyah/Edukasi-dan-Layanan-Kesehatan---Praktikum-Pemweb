@@ -16,13 +16,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($berat_badan <= 0 || $tinggi_badan <= 0) {
         $error = "Berat badan dan tinggi badan harus lebih dari 0.";
     } else {
-        // Konversi tinggi dari cm ke meter
+        
         $tinggi_meter = $tinggi_badan / 100;
 
-        // Hitung BMI
+       
         $nilai_bmi = round($berat_badan / ($tinggi_meter * $tinggi_meter), 2);
 
-        // Klasifikasi BMI
+       
         if ($nilai_bmi < 18.5) {
             $kategori_bmi = "Kurus";
         } elseif ($nilai_bmi < 25) {
@@ -33,10 +33,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $kategori_bmi = "Obesitas";
         }
 
-        // Estimasi kebutuhan cairan harian (35 ml per kg berat badan -> liter)
+        
         $kebutuhan_air = round($berat_badan * 0.035, 2);
 
-        // Simpan ke tabel riwayat_kalkulator
+       
         $query_simpan = "
             INSERT INTO riwayat_kalkulator
                 (user_id, berat_badan, tinggi_badan, nilai_bmi, kategori_bmi, kebutuhan_air)
@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// Ambil riwayat perhitungan milik pengguna yang sedang login
+
 $query_riwayat = "
     SELECT *
     FROM riwayat_kalkulator
